@@ -1,0 +1,41 @@
+head
+	title= title
+	script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js',type='text/javascript')
+	
+body
+	h1 Hi, please insert your name and a message
+	form(method="post",action="/posted_data")
+			p please enter your name:
+			input(type="text", id= "name")
+ 
+			p please enter your message:
+			textarea(id="message")
+			p
+			input(type="submit",value= "send", id= "submit")
+	div(id= "result") 
+script
+		{
+			$("#submit").click(function(e){
+				e.preventDefault(); 
+				console.debug('Form submit');
+				
+					$.ajax({
+						type:"POST",
+						url:"/posted_data",
+						data: {
+							'name': $("#name").val(),
+							'message': $("#message").val(), 
+							},
+						dataType : "json",
+						success: function(data){
+							var string="";
+							for (var i =data.length-2; i!=0;i--)
+							{
+								string +="<p>"+data[i].name+" said:</p><p>\""+ data[i].message+"\"</p>" 
+							}
+						$('#result').html(
+							"<p>thanks "+data[data.length-1].name+" for the message: </p><p>\""+ data[data.length-1].message+"\"!</p>"+"<p>please view other messages :</p>"+string
+										);
+						}
+						});});
+		}
